@@ -1,3 +1,4 @@
+# [GZ] From limo_car/rviz/gazebo.rviz, plus the PointCloud2 (/depth/points) and Image (/rgb/image_raw) displays.
 Panels:
   - Class: rviz_common/Displays
     Name: Displays
@@ -29,6 +30,21 @@ Visualization Manager:
       Description Source: Topic
       Description Topic:
         Value: /robot_description
+      Value: true
+    - Class: rviz_default_plugins/PointCloud2
+      Name: PointCloud2
+      Enabled: true
+      Topic:
+        Value: /depth/points
+      Color Transformer: RGB8
+      Style: Flat Squares
+      Size (m): 0.01
+      Value: true
+    - Class: rviz_default_plugins/Image
+      Name: Image
+      Enabled: true
+      Topic:
+        Value: /rgb/image_raw
       Value: true
   Global Options:
     Background Color: 48; 48; 48

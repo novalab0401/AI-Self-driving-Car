@@ -16,5 +16,6 @@ Changes made here (marked `[GZ]` in the files):
   with the Gazebo Classic material scripts replaced by plain colors.
 - `src/traffic_light_plugin.cpp` is written new for Gazebo Harmonic. It keeps the topic and color
   names of the Classic `limo_plugin` but none of its code.
-- `rviz/gazebo.rviz` comes from `limo_car/rviz` of the same fork and branch, unchanged.
+- `rviz/gazebo.rviz` comes from `limo_car/rviz` of the same fork and branch, with point cloud and
+  camera image displays added.
 - Depth camera and IMU use Gazebo Harmonic sensors, bridged to ROS in `config/bridge.yaml`.
