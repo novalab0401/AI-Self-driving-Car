@@ -1,4 +1,4 @@
-# Gazebo <-> ROS 2 topic bridge (drive, lidar, odometry, TF, depth camera, IMU)
+# Gazebo <-> ROS 2 topic bridge (drive, lidar, odometry, TF, depth camera, IMU, traffic light)
 - ros_topic_name: "/clock"
   gz_topic_name: "/clock"
   ros_type_name: "rosgraph_msgs/msg/Clock"
@@ -78,3 +78,10 @@
   ros_type_name: "sensor_msgs/msg/Imu"
   gz_type_name: "gz.msgs.IMU"
   direction: GZ_TO_ROS
+
+# Traffic light color: "red" | "yellow" | "green" | "off" (src/traffic_light_plugin.cpp)
+- ros_topic_name: "/traffic_light/color"
+  gz_topic_name: "/traffic_light/color"
+  ros_type_name: "std_msgs/msg/String"
+  gz_type_name: "gz.msgs.StringMsg"
+  direction: ROS_TO_GZ

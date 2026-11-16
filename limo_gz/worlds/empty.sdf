@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- Empty world with three boxes, for the first bring-up of LIMO on Gazebo Harmonic. -->
+<!-- Empty world with three boxes and one traffic light, for bringing up LIMO on Gazebo Harmonic. -->
 <sdf version="1.9">
   <world name="empty">
 
@@ -101,5 +101,14 @@
         </visual>
       </link>
     </model>
+
+    <!-- Traffic light, front-left of the spawn point, lenses turned toward it.
+         z is the same offset the Classic track world used: most of the pole is
+         below the ground so the lenses sit at 0.24 to 0.56 m, in view of the camera. -->
+    <include>
+      <uri>model://traffic_light</uri>
+      <name>traffic_light</name>
+      <pose>2.0 0.8 -0.739 0 0 -1.19</pose>
+    </include>
   </world>
 </sdf>
