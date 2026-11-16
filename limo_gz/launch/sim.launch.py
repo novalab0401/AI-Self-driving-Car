@@ -1,8 +1,8 @@
 """LIMO(아커만)를 Gazebo Harmonic 에 올린다: 구동, 라이다, 깊이 카메라, IMU, 오도메트리, TF.
 조종 창(dashboard)과 RViz 도 같이 띄운다.
 
-  ros2 launch limo_gz sim.launch.py
-  ros2 launch limo_gz sim.launch.py world:=empty.sdf
+  ros2 launch limo_gz sim.launch.py                    # town 맵 (worlds/town.sdf)
+  ros2 launch limo_gz sim.launch.py world:=empty.sdf   # 상자 3개와 신호등만 있는 빈 월드
   ros2 launch limo_gz sim.launch.py dashboard:=false rviz:=false
 """
 import os
@@ -74,7 +74,7 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        DeclareLaunchArgument('world', default_value='empty.sdf',
+        DeclareLaunchArgument('world', default_value='town.sdf',
                               description='worlds 폴더 안의 월드 파일 이름'),
         DeclareLaunchArgument('dashboard', default_value='true',
                               description='조종 창(dashboard_node.py)을 같이 띄울지'),
