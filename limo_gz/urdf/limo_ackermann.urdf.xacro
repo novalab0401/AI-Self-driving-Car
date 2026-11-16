@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!-- Modified 2026-11 for AI-Self-driving-Car: ported from Gazebo Classic (ROS 2 Humble) to
+     Gazebo Harmonic (ROS 2 Jazzy). Source: limo_car package of agilexrobotics/limo_ros2 (Apache-2.0),
+     via JACKSON-KIM-JAEHO/limo_ros2 branch humble_low_Mesh. Changed parts are marked [GZ]. -->
+<robot name="limo_ackermann" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:include filename="$(find limo_gz)/urdf/ackermann.xacro" />
+    <xacro:include filename="$(find limo_gz)/urdf/sensor.xacro" />
+
+    <xacro:limo_ackermann/>
+
+    <!-- ************************* Laser ****************************** -->
+    <xacro:gazebo_laser frame_prefix="laser" />
+
+    <joint name="laser_joint" type="fixed">
+        <origin xyz="0.1236 0 -0.01" rpy="0 0 0"/>
+        <parent link="base_link"/>
+        <child link="laser_link"/>
+    </joint>
+
+    <!-- [GZ] Depth camera and IMU are added back in a later step (their plugins are not ported yet). -->
+</robot>
