@@ -18,5 +18,20 @@
         <child link="laser_link"/>
     </joint>
 
-    <!-- [GZ] Depth camera and IMU are added back in a later step (their plugins are not ported yet). -->
+    <!-- ************************* Depth-camera *********************** -->
+    <xacro:gazebo_depth_camera frame_prefix="depth_camera" />
+
+    <joint name="depth_camera_joint" type="fixed">
+        <origin xyz="0.1 0 0.065" rpy="0 0 0"/>
+        <parent link="base_link"/>
+        <child link="depth_camera_link"/>
+    </joint>
+    <!-- ************************* IMU ******************************** -->
+    <xacro:gazebo_imu frame_prefix="imu" />
+
+    <joint name="imu_joint" type="fixed">
+        <origin xyz="0.0 0 -0.1" rpy="0 0 0"/>
+        <parent link="base_link"/>
+        <child link="imu_link"/>
+    </joint>
 </robot>

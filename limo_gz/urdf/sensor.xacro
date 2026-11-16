@@ -2,7 +2,6 @@
 <!-- Modified 2026-11 for AI-Self-driving-Car: ported from Gazebo Classic (ROS 2 Humble) to
      Gazebo Harmonic (ROS 2 Jazzy). Source: limo_car package of agilexrobotics/limo_ros2 (Apache-2.0),
      via JACKSON-KIM-JAEHO/limo_ros2 branch humble_low_Mesh. Changed parts are marked [GZ]. -->
-<!-- The depth camera and IMU macros below still use Gazebo Classic plugins. They are not used yet. -->
 <!-- Autor: Zhui Li -->
 <!--E-Mail: lz554113510@gmail.com -->
 <!--Company: Institut für Intermodale Transport- und Logistiksysteme in Technische Universität Braunschweig -->
@@ -119,14 +118,24 @@ realisierbar elektrische Komponente, also Sensoren aus Gazebo-Package. Diese Ant
             <child link="depth_link"/>
         </joint>
 
+        <!-- [GZ] Gazebo Harmonic RGB-D camera (was: type="depth" + libgazebo_ros_camera.so).
+             Gazebo topics: depth_camera/image, depth_camera/depth_image, depth_camera/points,
+             depth_camera/camera_info. config/bridge.yaml maps them to the ROS names the Classic
+             plugin used: /rgb/image_raw, /depth/image_raw, /depth/points, /rgb/camera_info,
+             /depth/camera_info.
+             Gazebo stamps everything with depth_camera_link (x forward), which is right for the
+             point cloud. Images and camera_info are re-stamped to the optical frame depth_link
+             (z forward) by `frame_id` in config/bridge.yaml. Do not set <optical_frame_id> here:
+             gz-sensors would also stamp the x-forward point cloud with it. -->
         <gazebo reference="${frame_prefix}_link">
-            <sensor name="sensor_camera" type="depth">
-                <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
+            <sensor name="sensor_camera" type="rgbd_camera">
+                <topic>${frame_prefix}</topic>
+                <gz_frame_id>${frame_prefix}_link</gz_frame_id>
                 <always_on>true</always_on>
                 <visualize>false</visualize>
                 <update_rate>10.0</update_rate>
                 <camera name="head">
-                    <horizontal_fov>1.3962634</horizontal_fov> <!-- 60*pi/180 -->
+                    <horizontal_fov>1.3962634</horizontal_fov> <!-- 80*pi/180 -->
                     <!-- normalisieren die Form für Fotos -->
                     <image>
                         <width>640</width>
@@ -138,26 +147,19 @@ realisierbar elektrische Komponente, also Sensoren aus Gazebo-Package. Diese Ant
                         <far>8.0</far>
                     </clip>
                 </camera>
-                <plugin name="gazebo_ros_depth_camera_sensor" filename="libgazebo_ros_camera.so">
-                    <ros>
-<!--                         <namespace>${frame_prefix}</namespace>-->
-                        <remapping>${frame_prefix}/image_raw:=rgb/image_raw</remapping>
-                        <remapping>${frame_prefix}/image_depth:=depth/image_raw</remapping>
-                        <remapping>${frame_prefix}/camera_info:=rgb/camera_info</remapping>
-                        <remapping>${frame_prefix}/camera_info_depth:=depth/camera_info</remapping>
-                        <remapping>${frame_prefix}/points:=depth/points</remapping>
-                    </ros>
-                    <camera_name>${frame_prefix}</camera_name>
-                    <frame_name>${frame_prefix}_frame_optical</frame_name>
-                    <hack_baseline>0.07</hack_baseline>
-                    <min_depth>0.001</min_depth>
-                    <max_depth>300.0</max_depth>
-                </plugin>
             </sensor>
         </gazebo>
     </xacro:macro>
 
     <!-- ******************************* Makrofunktion für IMU ***************************** -->
+    <!-- [GZ] one noise block, reused for every IMU axis -->
+    <xacro:macro name="imu_noise">
+        <noise type="gaussian">
+            <mean>0.0</mean>
+            <stddev>0.001</stddev>
+        </noise>
+    </xacro:macro>
+
     <xacro:macro name="gazebo_imu" params="frame_prefix">
         <link name='${frame_prefix}_link'>
             <pose>0 0 0 0 0 0</pose>
@@ -191,24 +193,28 @@ realisierbar elektrische Komponente, also Sensoren aus Gazebo-Package. Diese Ant
             </collision>
         </link>
 
+        <!-- [GZ] Gazebo Harmonic IMU (was: libgazebo_ros_imu_sensor.so). Needs the
+             gz-sim-imu-system plugin in the world file. ROS topic /imu, the same name the
+             real limo_base driver publishes. Noise 0.001 as before. -->
         <gazebo reference="${frame_prefix}_link">
-            <gravity>true</gravity>
             <sensor name="imu_sensor" type="imu">
+                <topic>/imu</topic>
+                <gz_frame_id>${frame_prefix}_link</gz_frame_id>
                 <always_on>true</always_on>
                 <update_rate>100</update_rate>
-                <visualize>true</visualize>
-                <topic>__default_topic__</topic>
-                <pose>0 0 0 0 0 0</pose>
-
-                <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
-                    <topicName>/limo/imu</topicName>
-                    <bodyName>${frame_prefix}_link</bodyName>
-                    <updateRateHZ>100.0</updateRateHZ>
-                    <gaussianNoise>0.001</gaussianNoise>
-                    <xyzOffset>0 0 0</xyzOffset>
-                    <rpyOffset>0 0 0</rpyOffset>
-                    <frameName>${frame_prefix}_link</frameName>
-                </plugin>
+                <visualize>false</visualize>
+                <imu>
+                    <angular_velocity>
+                        <x><xacro:imu_noise/></x>
+                        <y><xacro:imu_noise/></y>
+                        <z><xacro:imu_noise/></z>
+                    </angular_velocity>
+                    <linear_acceleration>
+                        <x><xacro:imu_noise/></x>
+                        <y><xacro:imu_noise/></y>
+                        <z><xacro:imu_noise/></z>
+                    </linear_acceleration>
+                </imu>
             </sensor>
         </gazebo>
     </xacro:macro>
