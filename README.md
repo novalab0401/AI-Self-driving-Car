@@ -39,9 +39,9 @@ sudo apt install -y ros-jazzy-ros-gz ros-jazzy-xacro ros-jazzy-robot-state-publi
 ```
 
 ```bash
-mkdir -p ~/limo_ws/src && cd ~/limo_ws/src
+mkdir -p ~/jaeho_ws/AI-Self-driving-Car/src && cd ~/jaeho_ws/AI-Self-driving-Car/src
 git clone https://github.com/novalab0401/AI-Self-driving-Car.git
-cd ~/limo_ws
+cd ~/jaeho_ws/AI-Self-driving-Car
 source /opt/ros/jazzy/setup.bash
 colcon build --symlink-install
 ```
@@ -51,7 +51,7 @@ conda 환경(`base` 포함)이 켜져 있어도 빌드됩니다. `limo_gz`의 `C
 ## 실행
 
 ```bash
-cd ~/limo_ws
+cd ~/jaeho_ws/AI-Self-driving-Car
 source /opt/ros/jazzy/setup.bash
 source install/setup.bash
 ros2 launch limo_gz sim.launch.py
